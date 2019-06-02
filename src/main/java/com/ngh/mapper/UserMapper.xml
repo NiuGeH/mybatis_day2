@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ngh.mapper.UserMapper">
+
+    <sql id="query_user_where">
+        <if test="userComte!=null">
+            <if test="userComte.name!=null and userComte.name != ''">
+                and user.name like '%${userComte.name}%'
+            </if>
+            <if test="userComte.sex!=null and userComte.sex != ''">
+                and user.sex = #{userComte.sex}
+            </if>
+            <if test="userComte.address!=null and userComte.address != ''">
+                and user.address = #{userComte.address}
+            </if>
+        </if>
+
+        <if test="userComte.idArray != null and userComte.idArray.size() != 0">
+            <foreach collection="userComte.idArray" item="user_id" open="and id in (" separator="," close=")">
+                #{user_id}
+            </foreach>
+        </if>
+
+    </sql>
+
+    <select id="findUserById" parameterType="Integer" resultType="User">
+        select * from user where id = #{id}
+    </select>
+
+    <select id="findUserList" parameterType="userQueryVo" resultType="UserComte">
+        select * from user where name like '%${userComte.name}%'
+    </select>
+
+    <insert id="insertUser" parameterType="User">
+        <selectKey keyProperty="id" order="AFTER" resultType="Integer">
+            select last_insert_id()
+        </selectKey>
+        insert into user (name, sex, age, address) values (#{name},#{sex},#{age},#{address});
+    </insert>
+
+    <delete id="delUserById" parameterType="Integer" >
+        delete from user where id = #{id}
+    </delete>
+
+    <update id="updateUser" parameterType="UserComte" >
+        update user set name = #{name} ,sex = #{sex} ,age = #{age} , address = #{address} where id = #{id}
+    </update>
+
+    <select id="findUserWhere" resultType="user" parameterType="userQueryVo">
+        select * from user
+        <where>
+            <include refid="query_user_where"/>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ngh.mapper.OrdersMapper">
+    <resultMap id="UserOrderResultMap" type="User">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="address" property="address"/>
+        <collection property="orders" ofType="Orders">
+            <id column="order_id" property="id"/>
+            <result column="number" property="number"/>
+            <result column="createtime" property="createtime"/>
+            <result column="note" property="note"/>
+            <result column="user_id" property="user_id"/>
+        </collection>
+
+    </resultMap>
+    <select id="findUserOrder" resultMap="UserOrderResultMap">
+      select user.id,user.name,user.address,user.sex,user.age,orders.id order_id ,orders.number , orders.createtime,orders.note,orders.user_id from user inner join orders on user.id = orders.user_id
+    </select>
+</mapper>
